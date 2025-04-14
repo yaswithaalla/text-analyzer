@@ -19,10 +19,7 @@ import random
 nltk.download('averaged_perceptron_tagger')
 
 
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
+
 
 
 # --- SETUP ---
