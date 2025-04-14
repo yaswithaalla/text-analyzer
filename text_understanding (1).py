@@ -15,8 +15,14 @@ from sumy.summarizers.lex_rank import LexRankSummarizer
 import nltk
 from nltk import sent_tokenize, word_tokenize, pos_tag
 import random
+def safe_nltk_download(package_name, resource_path):
+    try:
+        nltk.data.find(resource_path)
+    except LookupError:
+        nltk.download(package_name)
 
 
+safe_nltk_download('averaged_perceptron_tagger_en', 'taggers/averaged_perceptron_tagger_en')
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
