@@ -25,7 +25,7 @@ def safe_nltk_download(package_name, resource_path):
 safe_nltk_download('averaged_perceptron_tagger_en', 'taggers/averaged_perceptron_tagger_en')
 
 nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
+
 
 # --- SETUP ---
 st.set_page_config(page_title="Smart Text App", layout="centered")
