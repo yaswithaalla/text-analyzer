@@ -15,8 +15,15 @@ import nltk
 from nltk import sent_tokenize, word_tokenize, pos_tag
 import random
 
-nltk.download('punkt')
+
 nltk.download('averaged_perceptron_tagger')
+
+
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
 
 # --- SETUP ---
 st.set_page_config(page_title="Smart Text App", layout="centered")
