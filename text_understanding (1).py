@@ -18,7 +18,7 @@ import random
 
 
 
-nltk.download('punkt_tab')
+nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
 # --- SETUP ---
