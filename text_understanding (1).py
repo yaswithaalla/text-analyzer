@@ -15,6 +15,9 @@ from sumy.summarizers.lex_rank import LexRankSummarizer
 import nltk
 from nltk import sent_tokenize, word_tokenize, pos_tag
 import random
+
+nltk.data.path.append("/home/adminuser/nltk_data")
+
 def safe_nltk_download(package_name, resource_path):
     try:
         nltk.data.find(resource_path)
