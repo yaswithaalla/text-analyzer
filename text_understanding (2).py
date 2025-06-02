@@ -7,17 +7,19 @@ import tempfile
 import os
 import PyPDF2
 import re
+import random
+import nltk
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
-import random
-import nltk
 
-# ✅ Fix for LookupError: missing 'punkt'
-nltk.download('punkt')
+# Ensure nltk data is available
+nltk_data_path = os.path.join(os.getcwd(), "nltk_data")
+nltk.download("punkt", download_dir=nltk_data_path)
+nltk.data.path.append(nltk_data_path)
 
 st.set_page_config(page_title="Smart Text App", layout="centered")
-st.title("🌐 Advanced Smart Text Understanding App")
+st.title("\U0001F310 Advanced Smart Text Understanding App")
 
 translator = Translator()
 
@@ -33,18 +35,30 @@ if theme == "Dark":
     """, unsafe_allow_html=True)
 
 language_map = {
-    "English": "en", "Hindi": "hi", "Spanish": "es", "French": "fr", "German": "de",
-    "Italian": "it", "Chinese": "zh-cn", "Japanese": "ja", "Russian": "ru", "Arabic": "ar",
-    "Bengali": "bn", "Tamil": "ta", "Telugu": "te", "Kannada": "kn", "Malayalam": "ml"
+    "English": "en",
+    "Hindi": "hi",
+    "Spanish": "es",
+    "French": "fr",
+    "German": "de",
+    "Italian": "it",
+    "Chinese": "zh-cn",
+    "Japanese": "ja",
+    "Russian": "ru",
+    "Arabic": "ar",
+    "Bengali": "bn",
+    "Tamil": "ta",
+    "Telugu": "te",
+    "Kannada": "kn",
+    "Malayalam": "ml"
 }
-selected_lang_name = st.selectbox("🌍 Output Language (Text & Voice)", list(language_map.keys()))
+selected_lang_name = st.selectbox("\U0001F30D Output Language (Text & Voice)", list(language_map.keys()))
 selected_lang_code = language_map[selected_lang_name]
 
 tts_mode = st.radio("TTS Mode", ["Online (gTTS)", "Offline (pyttsx3 - English only)"])
 voice_enabled = st.checkbox("Enable voice output")
 
-uploaded_file = st.file_uploader("📌 Upload PDF or .txt", type=["pdf", "txt"])
-text_input = st.text_area("📄 Or paste your text here:", height=250)
+uploaded_file = st.file_uploader("\U0001F4CC Upload PDF or .txt", type=["pdf", "txt"])
+text_input = st.text_area("\U0001F4C4 Or paste your text here:", height=250)
 
 def extract_text_from_pdf(file):
     reader = PyPDF2.PdfReader(file)
@@ -79,7 +93,6 @@ def speak_text(text, lang):
 def generate_quiz_questions(text, num_questions=5):
     sentences = re.split(r'(?<=[.!?]) +', text)
     questions = []
-
     for sentence in sentences:
         words = [word for word in re.findall(r'\b\w+\b', sentence) if len(word) > 3]
         if words:
@@ -87,10 +100,8 @@ def generate_quiz_questions(text, num_questions=5):
             question = sentence.replace(chosen_word, "_", 1)
             correct_answer = chosen_word
             questions.append((question, correct_answer))
-
         if len(questions) >= num_questions:
             break
-
     return questions
 
 main_text = ""
@@ -103,7 +114,7 @@ elif text_input:
     main_text = text_input
 
 if main_text:
-    st.subheader("📃 Loaded Text Preview")
+    st.subheader("\U0001F4C3 Loaded Text Preview")
     st.text(main_text[:800] + ("..." if len(main_text) > 800 else ""))
 
 question = st.text_input("❓ Ask a question from the text:")
@@ -111,7 +122,6 @@ question = st.text_input("❓ Ask a question from the text:")
 if st.button("Get Answer") and question:
     detected_lang = detect(main_text)
     main_text_en = translator.translate(main_text, dest="en").text if detected_lang != 'en' else main_text
-
     answer_en = find_answer(main_text_en, question)
     answer_translated = translator.translate(answer_en, dest=selected_lang_code).text if selected_lang_code != "en" else answer_en
 
@@ -148,7 +158,6 @@ if st.button("Summarize Text"):
 if st.button("Generate Quiz Questions"):
     detected_lang = detect(main_text)
     main_text_en = translator.translate(main_text, dest="en").text if detected_lang != 'en' else main_text
-
     questions = generate_quiz_questions(main_text_en)
     st.subheader("🧠 Quiz Questions")
 
@@ -165,7 +174,7 @@ if st.button("Generate Quiz Questions"):
             st.audio(audio_file)
 
     st.download_button("📄 Download Quiz as Text", "\n\n".join([f"Q{i}: {q}\nA: {a}" for i, (q, a) in enumerate(questions, 1)]), file_name="quiz.txt")
-
 else:
     st.info("Upload a file or paste some text to start.")
+
 
