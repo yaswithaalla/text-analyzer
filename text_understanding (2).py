@@ -11,13 +11,15 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
 import random
+import nltk
 
+# ✅ Fix for LookupError: missing 'punkt'
+nltk.download('punkt')
 
 st.set_page_config(page_title="Smart Text App", layout="centered")
 st.title("🌐 Advanced Smart Text Understanding App")
 
 translator = Translator()
-
 
 theme = st.sidebar.radio("Choose Theme", ["Light", "Dark"])
 if theme == "Dark":
@@ -30,38 +32,19 @@ if theme == "Dark":
     </style>
     """, unsafe_allow_html=True)
 
-
-
 language_map = {
-    "English": "en",
-    "Hindi": "hi",
-    "Spanish": "es",
-    "French": "fr",
-    "German": "de",
-    "Italian": "it",
-    "Chinese": "zh-cn",
-    "Japanese": "ja",
-    "Russian": "ru",
-    "Arabic": "ar",
-    "Bengali": "bn",
-    "Tamil": "ta",
-    "Telugu": "te",
-    "Kannada": "kn",
-    "Malayalam": "ml"
+    "English": "en", "Hindi": "hi", "Spanish": "es", "French": "fr", "German": "de",
+    "Italian": "it", "Chinese": "zh-cn", "Japanese": "ja", "Russian": "ru", "Arabic": "ar",
+    "Bengali": "bn", "Tamil": "ta", "Telugu": "te", "Kannada": "kn", "Malayalam": "ml"
 }
 selected_lang_name = st.selectbox("🌍 Output Language (Text & Voice)", list(language_map.keys()))
 selected_lang_code = language_map[selected_lang_name]
 
-
-
 tts_mode = st.radio("TTS Mode", ["Online (gTTS)", "Offline (pyttsx3 - English only)"])
 voice_enabled = st.checkbox("Enable voice output")
 
-
 uploaded_file = st.file_uploader("📌 Upload PDF or .txt", type=["pdf", "txt"])
 text_input = st.text_area("📄 Or paste your text here:", height=250)
-
-
 
 def extract_text_from_pdf(file):
     reader = PyPDF2.PdfReader(file)
@@ -98,10 +81,10 @@ def generate_quiz_questions(text, num_questions=5):
     questions = []
 
     for sentence in sentences:
-        words = [word for word in re.findall(r'\b\w+\b', sentence) if len(word) > 3] # Extract words longer than 3 chars
+        words = [word for word in re.findall(r'\b\w+\b', sentence) if len(word) > 3]
         if words:
             chosen_word = random.choice(words)
-            question = sentence.replace(chosen_word, "_", 1) # Replace only the first occurrence
+            question = sentence.replace(chosen_word, "_", 1)
             correct_answer = chosen_word
             questions.append((question, correct_answer))
 
@@ -109,7 +92,6 @@ def generate_quiz_questions(text, num_questions=5):
             break
 
     return questions
-
 
 main_text = ""
 if uploaded_file:
@@ -186,3 +168,4 @@ if st.button("Generate Quiz Questions"):
 
 else:
     st.info("Upload a file or paste some text to start.")
+
